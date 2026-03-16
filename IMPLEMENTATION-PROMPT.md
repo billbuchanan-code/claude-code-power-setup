@@ -6,7 +6,7 @@ Copy and paste this entire prompt into a fresh Claude Code session to build the 
 
 ## The Prompt
 
-```
+````
 I want you to set up a production-grade Claude Code configuration. Here's exactly what I need:
 
 ## My Profile
@@ -19,6 +19,7 @@ I want you to set up a production-grade Claude Code configuration. Here's exactl
 Create these directories:
 ~/.claude/agents/
 ~/.claude/skills/
+~/.claude/skill-library/
 ~/.claude/hooks/
 ~/.claude/rules/
 ~/.claude/agent-memory/
@@ -125,27 +126,65 @@ Create ~/.claude/agents.md with:
 - Sequential chains (e.g., debug → fix → test)
 - Routing decision rules (clear match → direct, multi-domain → agent-manager, etc.)
 
-## Step 8: Core Skills
+## Step 8: Skill Library System
 
-Create these skills in ~/.claude/skills/<name>/SKILL.md:
+All skills go into ~/.claude/skill-library/<name>/SKILL.md (NOT directly into ~/.claude/skills/).
+Then symlink only the global skills into ~/.claude/skills/:
 
-### Essential:
+### Create all skills in ~/.claude/skill-library/:
+
+**Global (symlink these into ~/.claude/skills/):**
 - commit — Stage specific files, conventional commits, push (haiku)
 - start — Session health check: tools, MCP, keys, agents, hooks (haiku)
 - handoff — Generate HANDOFF.md for session continuation (haiku)
 - compact — Smart context compaction preserving decisions (haiku)
-
-### Recommended:
-- test-and-fix — Run tests, analyze, fix, re-run loop (sonnet)
-- research — Deep web + codebase research with report (sonnet)
-- standup — Daily standup from git activity (haiku)
 - evolve — Analyze session patterns, recommend automations (haiku)
 
+**Selectable (opt-in per project):**
+- test-and-fix — Run tests, analyze, fix, re-run loop (sonnet)
+- research — Deep web + codebase research with report (sonnet)
+- multi-plan — Parallel multi-agent feature planning (sonnet)
+- visualize — Generate interactive HTML dashboards (sonnet)
+- exec-brief — Transform analysis into executive summary (sonnet)
+- pr-review — Structured PR review with feedback (sonnet)
+- standup — Daily standup from git activity (haiku)
+- roadmap-review — Executive panel reviews roadmap (sonnet)
+
+**Bundles (opt-in as a group):**
+- specflow: flow.init, flow.design, flow.analyze, flow.implement, flow.verify, flow.review, flow.merge, flow.orchestrate, flow.memory, flow.roadmap, flow.taskstoissues, flow.doctor
+- sync: claude.sync.up, claude.sync.down
+
 [CUSTOMIZE: Add any domain-specific skills you need]
+
+### Symlink global skills:
+```bash
+for skill in commit start handoff compact evolve; do
+  ln -s ~/.claude/skill-library/$skill ~/.claude/skills/$skill
+done
+````
+
+### Install the claude-skills CLI:
+
+Create ~/.claude/scripts/claude-skills — a bash script that manages per-project skill symlinks.
+It should support:
+
+- `claude-skills add <skills|bundles>` — symlink skills into .claude/skills/ in current project
+- `claude-skills remove <skills|bundles>` — remove symlinks
+- `claude-skills list` — show global + project skills
+- `claude-skills available` — show full library
+- `claude-skills global-add/global-remove` — promote/demote to global
+
+Bundle definitions:
+
+- "specflow" expands to all 12 flow.\* skills
+- "sync" expands to claude.sync.up + claude.sync.down
+
+Add to PATH: `echo 'export PATH="$HOME/.claude/scripts:$PATH"' >> ~/.zshrc`
 
 ## Step 9: Reference Doc
 
 Create ~/.claude/REFERENCE.md with:
+
 - Agent routing tables (signal keywords → agent, parallel combos, sequential chains)
 - Skills registry (all skills with model and purpose)
 - Hooks detail (all hooks with matchers and actions)
@@ -155,6 +194,7 @@ Create ~/.claude/REFERENCE.md with:
 ## Step 10: Memory Index
 
 Create ~/.claude/projects/-Users-[YOUR_USERNAME]-[YOUR_PROJECT]/memory/MEMORY.md with:
+
 - Your name and role
 - Active projects table
 - Key preferences
@@ -163,12 +203,18 @@ Create ~/.claude/projects/-Users-[YOUR_USERNAME]-[YOUR_PROJECT]/memory/MEMORY.md
 ## Final Verification
 
 After creating everything:
+
 1. Run `ls -la ~/.claude/hooks/*.sh` — confirm all hooks are executable
 2. Run `cat ~/.claude/settings.json | python3 -m json.tool` — confirm valid JSON
 3. Run `ls ~/.claude/agents/` — confirm all agent files exist
-4. Run `ls ~/.claude/skills/` — confirm all skill directories exist
-5. Run `cat ~/.claude/CLAUDE.md | head -5` — confirm CLAUDE.md exists
-6. Run `cat ~/.claude/rules/coding.md | head -5` — confirm rules exist
+4. Run `ls ~/.claude/skill-library/` — confirm all skills are in the library
+5. Run `ls -la ~/.claude/skills/` — confirm global skills are symlinks to library
+6. Run `which claude-skills` — confirm CLI is on PATH
+7. Run `cat ~/.claude/CLAUDE.md | head -5` — confirm CLAUDE.md exists
+8. Run `cat ~/.claude/rules/coding.md | head -5` — confirm rules exist
 
 Report what was created and any issues found.
+
+```
+
 ```

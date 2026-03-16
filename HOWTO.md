@@ -605,9 +605,89 @@ These groups of agents can run simultaneously on independent concerns:
 
 ---
 
-## 7. Custom Skills
+## 7. Custom Skills & Skill Library
 
-Skills are slash commands. Each lives in `~/.claude/skills/<name>/SKILL.md`.
+Skills are slash commands defined as markdown files. This setup uses a **skill library** pattern where all skills live in a central directory (`~/.claude/skill-library/`) and are selectively enabled per project via symlinks.
+
+### Architecture
+
+```
+~/.claude/
+  skill-library/           # Central library — all skills live here
+    commit/SKILL.md
+    research/SKILL.md
+    flow.init/SKILL.md
+    ...
+  skills/                  # Global skills — symlinks to library (always available)
+    commit -> ../skill-library/commit
+    start -> ../skill-library/start
+    ...
+  scripts/
+    claude-skills          # CLI tool to manage per-project skill selection
+
+~/my-project/.claude/
+  skills/                  # Project skills — symlinks to library (project-specific)
+    flow.init -> ~/.claude/skill-library/flow.init
+    research -> ~/.claude/skill-library/research
+    ...
+```
+
+### Skill Tiers
+
+| Tier                                 | Skills                                                                                                                            | Behavior                                               |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Global** (always on)               | `commit`, `start`, `handoff`, `compact`, `evolve`                                                                                 | Symlinked in `~/.claude/skills/`, available everywhere |
+| **Bundles** (opt-in as group)        | `specflow` (12 flow.\* skills), `sync` (sync.up + sync.down)                                                                      | Add to a project with one command                      |
+| **Selectable** (opt-in individually) | `research`, `test-and-fix`, `multi-plan`, `visualize`, `exec-brief`, `pr-review`, `standup`, `roadmap-review`, `bill-voice-skill` | Pick per project                                       |
+
+### claude-skills CLI
+
+Install the CLI tool from `scripts/claude-skills` in this repo:
+
+```bash
+cp scripts/claude-skills ~/.claude/scripts/claude-skills
+chmod +x ~/.claude/scripts/claude-skills
+echo 'export PATH="$HOME/.claude/scripts:$PATH"' >> ~/.zshrc
+```
+
+Usage:
+
+```bash
+claude-skills add specflow              # Enable all 12 flow.* skills in current project
+claude-skills add research pr-review    # Enable individual skills
+claude-skills add sync                  # Enable dotfile sync pair
+claude-skills remove sync              # Disable dotfile sync
+claude-skills list                     # Show enabled skills (global + project)
+claude-skills available                # Show full library with status
+claude-skills global-add standup       # Promote a skill to global
+claude-skills global-remove standup    # Demote back to library-only
+```
+
+### Setting Up the Library
+
+```bash
+# 1. Create the library
+mkdir -p ~/.claude/skill-library
+
+# 2. Move all skills from ~/.claude/skills/ to the library
+for dir in ~/.claude/skills/*/; do
+  mv "$dir" ~/.claude/skill-library/
+done
+
+# 3. Symlink the global skills back
+for skill in commit start handoff compact evolve; do
+  ln -s ~/.claude/skill-library/$skill ~/.claude/skills/$skill
+done
+
+# 4. Enable skills per project
+cd ~/my-project
+mkdir -p .claude/skills
+claude-skills add specflow research
+```
+
+### Skill Definition Format
+
+Each skill lives in `~/.claude/skill-library/<name>/SKILL.md`:
 
 ### Skill Definition Format
 
