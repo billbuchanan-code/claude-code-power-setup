@@ -129,8 +129,31 @@ claude-code-power-setup/
     log-subagent-start.sh
     verify-task-complete.sh
     mcp-publish-allowlist.conf
+  scripts/
+    claude-skills              # CLI tool to manage per-project skill selection
   rules/
     coding.md                  # Global coding conventions
+```
+
+## Skill Library System
+
+Skills are organized into three tiers:
+
+| Tier                                 | Skills                                                                                                                            | Behavior                          |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| **Global** (always on)               | `commit`, `start`, `handoff`, `compact`, `evolve`                                                                                 | Available in every project        |
+| **Bundles** (opt-in as a group)      | `specflow` (12 flow.\* skills), `sync` (sync.up + sync.down)                                                                      | Add to a project with one command |
+| **Selectable** (opt-in individually) | `research`, `test-and-fix`, `multi-plan`, `visualize`, `exec-brief`, `pr-review`, `standup`, `roadmap-review`, `bill-voice-skill` | Pick per project                  |
+
+All skills live in `~/.claude/skill-library/`. Projects opt in via symlinks using the `claude-skills` CLI:
+
+```bash
+claude-skills add specflow              # Enable all 12 flow.* skills
+claude-skills add research pr-review    # Enable individual skills
+claude-skills add sync                  # Enable dotfile sync
+claude-skills remove sync              # Disable dotfile sync
+claude-skills list                     # Show what's enabled
+claude-skills available                # Show full library
 ```
 
 ## Getting Started
@@ -154,17 +177,31 @@ cp config/REFERENCE.md ~/.claude/REFERENCE.md
 cp config/agents.md ~/.claude/agents.md
 cp config/settings.json ~/.claude/settings.json
 
-# Copy agents, skills, hooks, rules
+# Copy agents, hooks, rules
 cp -r agents/ ~/.claude/agents/
-cp -r skills/ ~/.claude/skills/
 cp -r hooks/ ~/.claude/hooks/
 cp -r rules/ ~/.claude/rules/
+
+# Install skills into the skill library (not directly into skills/)
+cp -r skills/ ~/.claude/skill-library/
+
+# Symlink global skills (always available)
+mkdir -p ~/.claude/skills
+for skill in commit start handoff compact evolve; do
+  ln -sf ~/.claude/skill-library/$skill ~/.claude/skills/$skill
+done
+
+# Install the skills manager CLI
+mkdir -p ~/.claude/scripts
+cp scripts/claude-skills ~/.claude/scripts/claude-skills
+chmod +x ~/.claude/scripts/claude-skills
+echo 'export PATH="$HOME/.claude/scripts:$PATH"' >> ~/.zshrc
 
 # Make hooks executable
 chmod +x ~/.claude/hooks/*.sh
 
 # Create required directories
-mkdir -p ~/.claude/{agent-memory,scripts,projects}
+mkdir -p ~/.claude/{agent-memory,projects}
 ```
 
 Then customize `~/.claude/CLAUDE.md` for your role and preferences.

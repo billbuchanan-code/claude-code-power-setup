@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+# claude-skills — Manage per-project Claude Code skill symlinks
+# Skills live in ~/.claude/skill-library/ and are symlinked into .claude/skills/
+
+LIBRARY="$HOME/.claude/skill-library"
+GLOBAL_SKILLS="$HOME/.claude/skills"
+
+# Bundles
+SPECFLOW_SKILLS="flow.init flow.design flow.analyze flow.implement flow.verify flow.review flow.merge flow.orchestrate flow.memory flow.roadmap flow.taskstoissues flow.doctor"
+SYNC_SKILLS="claude.sync.up claude.sync.down"
+
+usage() {
+  cat <<'EOF'
+Usage: claude-skills <command> [skills...]
+
+Commands:
+  add <skills...>      Enable skills in the current project
+  remove <skills...>   Disable skills in the current project
+  list                 Show enabled skills for the current project
+  available            Show all skills in the library
+  global-add <skills>  Add skills to global (all projects)
+  global-remove <skills> Remove skills from global
+
+Bundles:
+  specflow             All 12 flow.* skills
+  sync                 claude.sync.up + claude.sync.down
+
+Examples:
+  claude-skills add specflow
+  claude-skills add research pr-review test-and-fix
+  claude-skills add sync
+  claude-skills remove sync
+  claude-skills remove specflow
+  claude-skills list
+EOF
+  exit 1
+}
+
+# Resolve bundle names to individual skills
+resolve_skills() {
+  local resolved=()
+  for skill in "$@"; do
+    case "$skill" in
+      specflow) resolved+=($SPECFLOW_SKILLS) ;;
+      sync)     resolved+=($SYNC_SKILLS) ;;
+      *)        resolved+=("$skill") ;;
+    esac
+  done
+  echo "${resolved[@]}"
+}
+
+# Get project skills directory (create if needed)
+project_skills_dir() {
+  local dir=".claude/skills"
+  if [ ! -d ".claude" ]; then
+    echo "Error: No .claude directory found. Run from a project root, or run 'mkdir -p .claude/skills' first." >&2
+    exit 1
+  fi
+  mkdir -p "$dir"
+  echo "$dir"
+}
+
+cmd_add() {
+  [ $# -eq 0 ] && usage
+  local dir
+  dir=$(project_skills_dir) || exit 1
+  local skills
+  skills=$(resolve_skills "$@")
+  local added=0
+  for skill in $skills; do
+    if [ ! -d "$LIBRARY/$skill" ]; then
+      echo "  ✗ $skill — not found in library"
+      continue
+    fi
+    if [ -L "$dir/$skill" ] || [ -d "$dir/$skill" ]; then
+      echo "  · $skill — already enabled"
+      continue
+    fi
+    ln -s "$LIBRARY/$skill" "$dir/$skill"
+    echo "  ✓ $skill"
+    added=$((added + 1))
+  done
+  echo ""
+  echo "$added skill(s) added to $(pwd)"
+}
+
+cmd_remove() {
+  [ $# -eq 0 ] && usage
+  local dir=".claude/skills"
+  local skills
+  skills=$(resolve_skills "$@")
+  local removed=0
+  for skill in $skills; do
+    if [ -L "$dir/$skill" ]; then
+      rm "$dir/$skill"
+      echo "  ✓ $skill removed"
+      removed=$((removed + 1))
+    elif [ -d "$dir/$skill" ]; then
+      echo "  · $skill — is a real directory, not a symlink (skipped)"
+    else
+      echo "  · $skill — not enabled"
+    fi
+  done
+  echo ""
+  echo "$removed skill(s) removed from $(pwd)"
+}
+
+cmd_list() {
+  echo "Global skills (all projects):"
+  for link in "$GLOBAL_SKILLS"/*/; do
+    [ -d "$link" ] && echo "  $(basename "$link")"
+  done
+
+  echo ""
+  echo "Project skills ($(pwd)):"
+  local dir=".claude/skills"
+  if [ ! -d "$dir" ]; then
+    echo "  (none — no .claude/skills directory)"
+    return
+  fi
+  local count=0
+  for link in "$dir"/*/; do
+    if [ -d "$link" ]; then
+      local name=$(basename "$link")
+      if [ -L "${link%/}" ]; then
+        echo "  $name (symlink)"
+      else
+        echo "  $name (local)"
+      fi
+      count=$((count + 1))
+    fi
+  done
+  if [ $count -eq 0 ]; then
+    echo "  (none)"
+  fi
+}
+
+cmd_available() {
+  echo "Skill Library (~/.claude/skill-library/):"
+  echo ""
+  echo "Bundles:"
+  echo "  specflow  — $SPECFLOW_SKILLS" | fold -s -w 80
+  echo "  sync      — $SYNC_SKILLS"
+  echo ""
+  echo "Individual skills:"
+  for dir in "$LIBRARY"/*/; do
+    local name=$(basename "$dir")
+    # Check if it's a global skill
+    local scope="library"
+    [ -L "$GLOBAL_SKILLS/$name" ] && scope="global"
+    echo "  $name ($scope)"
+  done
+}
+
+cmd_global_add() {
+  [ $# -eq 0 ] && usage
+  local skills
+  skills=$(resolve_skills "$@")
+  local added=0
+  for skill in $skills; do
+    if [ ! -d "$LIBRARY/$skill" ]; then
+      echo "  ✗ $skill — not found in library"
+      continue
+    fi
+    if [ -L "$GLOBAL_SKILLS/$skill" ] || [ -d "$GLOBAL_SKILLS/$skill" ]; then
+      echo "  · $skill — already global"
+      continue
+    fi
+    ln -s "$LIBRARY/$skill" "$GLOBAL_SKILLS/$skill"
+    echo "  ✓ $skill → global"
+    added=$((added + 1))
+  done
+  echo ""
+  echo "$added skill(s) added globally"
+}
+
+cmd_global_remove() {
+  [ $# -eq 0 ] && usage
+  local skills
+  skills=$(resolve_skills "$@")
+  local removed=0
+  for skill in $skills; do
+    if [ -L "$GLOBAL_SKILLS/$skill" ]; then
+      rm "$GLOBAL_SKILLS/$skill"
+      echo "  ✓ $skill removed from global"
+      removed=$((removed + 1))
+    else
+      echo "  · $skill — not a global symlink"
+    fi
+  done
+  echo ""
+  echo "$removed skill(s) removed from global"
+}
+
+# Main
+case "${1:-}" in
+  add)           shift; cmd_add "$@" ;;
+  remove|rm)     shift; cmd_remove "$@" ;;
+  list|ls)       cmd_list ;;
+  available|avail) cmd_available ;;
+  global-add)    shift; cmd_global_add "$@" ;;
+  global-remove) shift; cmd_global_remove "$@" ;;
+  *)             usage ;;
+esac
