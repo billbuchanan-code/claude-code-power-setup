@@ -39,6 +39,17 @@ This guide documents a real-world setup built for a business executive who uses 
 
 ---
 
+## Related Repositories
+
+This setup references two companion projects:
+
+| Repo             | Description                                                                                                                                                                                              | Link                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **SpecFlow**     | Agentic workflow system powering the 12 `flow.*` skills and 10 SpecFlow agents. Handles spec-driven design, implementation, review, and merge workflows.                                                 | [wiseyoda/specflow](https://github.com/wiseyoda/specflow) |
+| **AI Assistant** | Custom MCP server providing 100+ tools across email, calendar, contacts, drive, messaging, tasks, health, weather, and more. Powers the `ai-assistant` MCP integration referenced throughout this setup. | Private repo — contact for access                         |
+
+---
+
 ## Key Design Principles
 
 1. **Safety First** — Hooks block `rm -rf`, force push, `DROP TABLE`, and unauthorized MCP writes before they execute
