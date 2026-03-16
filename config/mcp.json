@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "ai-assistant": {
+      "command": "bash",
+      "args": ["-c", "$HOME/.claude/scripts/ai-assistant-launch.sh"]
+    },
+    "asana": {
+      "type": "sse",
+      "url": "https://mcp.asana.com/sse"
+    },
+    "vercel": {
+      "command": "bash",
+      "args": ["-c", "$HOME/.claude/scripts/mcp-launch.sh npx -y vercel-mcp"],
+      "env": {}
+    }
+  }
+}

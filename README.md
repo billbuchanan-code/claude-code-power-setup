@@ -59,10 +59,101 @@ This guide documents a real-world setup built for a business executive who uses 
 
 ---
 
-## Files in This Guide
+## Repository Structure
 
-| File                       | Description                                                              |
-| -------------------------- | ------------------------------------------------------------------------ |
-| `README.md`                | This overview                                                            |
-| `HOWTO.md`                 | Step-by-step implementation guide with all configuration files           |
-| `IMPLEMENTATION-PROMPT.md` | A single prompt you can paste into Claude Code to build the entire setup |
+```
+claude-code-power-setup/
+  README.md                    # This overview
+  HOWTO.md                     # Step-by-step implementation guide
+  IMPLEMENTATION-PROMPT.md     # Copy-paste prompt to build the setup
+  config/
+    CLAUDE.md                  # Global behavior instructions
+    REFERENCE.md               # On-demand reference doc
+    agents.md                  # Agent roster and routing rules
+    settings.json              # Core settings (model, hooks, permissions)
+    mcp.json                   # MCP server definitions
+  agents/                      # 23 agent definition files
+    agent-manager.md
+    code-reviewer.md
+    cost-cleric.md
+    data-scientist.md
+    database-reviewer.md
+    debugger.md
+    deploy-engineer.md
+    documenter.md
+    media-planner.md
+    security-auditor.md
+    specflow-*.md              # 10 SpecFlow workflow agents
+    strategic-thinker.md
+    test-builder.md
+    ux-designer.md
+  skills/                      # 27 skill definitions
+    commit/SKILL.md
+    start/skill.md
+    handoff/SKILL.md
+    compact/SKILL.md
+    research/SKILL.md
+    test-and-fix/SKILL.md
+    multi-plan/SKILL.md
+    visualize/SKILL.md
+    exec-brief/SKILL.md
+    pr-review/SKILL.md
+    standup/SKILL.md
+    evolve/SKILL.md
+    bill-voice-skill/SKILL.md
+    claude.sync.up/SKILL.md
+    claude.sync.down/SKILL.md
+    roadmap-review/SKILL.md
+    flow.*/SKILL.md            # 12 SpecFlow workflow skills
+  hooks/                       # 12 safety and automation scripts
+    block-destructive.sh
+    validate-readonly-query.sh
+    guard-mcp-publish.sh
+    guard-mcp-sql.sh
+    auto-format.sh
+    convert-before-read.sh
+    notify-on-stop.sh
+    audit-config-change.sh
+    inject-security-context.sh
+    log-subagent-start.sh
+    verify-task-complete.sh
+    mcp-publish-allowlist.conf
+  rules/
+    coding.md                  # Global coding conventions
+```
+
+## Getting Started
+
+1. Read the **[HOWTO.md](HOWTO.md)** for a detailed walkthrough of every component
+2. Browse the `agents/`, `skills/`, and `hooks/` directories to see real production files
+3. Use **[IMPLEMENTATION-PROMPT.md](IMPLEMENTATION-PROMPT.md)** to have Claude Code build the setup for you
+
+## Installation
+
+To install everything at once, copy the files into your `~/.claude/` directory:
+
+```bash
+# Clone the repo
+git clone https://github.com/billbuchanan-code/claude-code-power-setup.git
+cd claude-code-power-setup
+
+# Copy config files
+cp config/CLAUDE.md ~/.claude/CLAUDE.md
+cp config/REFERENCE.md ~/.claude/REFERENCE.md
+cp config/agents.md ~/.claude/agents.md
+cp config/settings.json ~/.claude/settings.json
+
+# Copy agents, skills, hooks, rules
+cp -r agents/ ~/.claude/agents/
+cp -r skills/ ~/.claude/skills/
+cp -r hooks/ ~/.claude/hooks/
+cp -r rules/ ~/.claude/rules/
+
+# Make hooks executable
+chmod +x ~/.claude/hooks/*.sh
+
+# Create required directories
+mkdir -p ~/.claude/{agent-memory,scripts,projects}
+```
+
+Then customize `~/.claude/CLAUDE.md` for your role and preferences.

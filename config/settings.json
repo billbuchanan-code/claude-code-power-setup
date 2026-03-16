@@ -1,0 +1,107 @@
+{
+  "env": {
+    "MCP_TIMEOUT": "5000",
+    "MAX_MCP_OUTPUT_TOKENS": "15000",
+    "ENABLE_TOOL_SEARCH": "auto:5",
+    "CLAUDE_CODE_EFFORT_LEVEL": "low",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "permissions": {
+    "deny": [
+      "Read(**/.env*)",
+      "Read(**/*.key)",
+      "Read(**/*.pem)",
+      "Read(**/credentials*)",
+      "Read(**/secrets/**)",
+      "Read(**/node_modules/**)"
+    ]
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/convert-before-read.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-destructive.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-readonly-query.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-mcp-publish.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-mcp-sql.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/auto-format.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'PRESERVE during compaction: all decisions and rationale, file paths modified, user constraints, working solutions, task list state, current project name and phase, active sprint goals, test commands.'"
+          }
+        ]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/audit-config-change.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-on-stop.sh",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true
+}
