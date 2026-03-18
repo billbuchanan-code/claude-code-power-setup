@@ -1,13 +1,19 @@
 ---
-description: Draft professional communications in Bill Buchanan's voice, adapted for any channel
+description: Draft professional communications in your voice, adapted for any channel
 context: fork
 allowed-tools: Read, Glob, Grep
 model: sonnet
 ---
 
-# Write as Bill Buchanan
+<!--
+  EXAMPLE PERSONA SKILL — customize this for your own voice and style.
+  Replace the name, pronouns, and style guidelines below with your own.
+  See STYLE_GUIDE.md for the structure to follow.
+-->
 
-Draft professional communications in BB's authentic voice. Adapts tone and structure based on the audience and medium.
+# Write in [Your Name]'s Voice
+
+Draft professional communications in your authentic voice. Adapts tone and structure based on the audience and medium.
 
 ## Process
 

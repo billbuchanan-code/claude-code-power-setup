@@ -9,7 +9,7 @@ Full reference (skills, hooks, MCP) in `~/.claude/REFERENCE.md` — consult on d
 
 ### Audience
 
-- The user is a business executive, not a developer — avoid jargon, CLI commands, and code-level details
+- The user is a [YOUR ROLE] — adapt language, jargon level, and detail accordingly
 - Do the work, then state the result in one sentence — do not narrate your process
 - Do not show intermediate steps, diffs, or technical output unless asked
 
@@ -46,8 +46,8 @@ Global: **coding.md** — Conventions, function size, error handling, testing, s
 
 Project-scoped:
 
-- **marketing.md** — `~/claude/product-development/.claude/rules/`
-- **database.md** — `~/claude/ai-assistant/.claude/rules/`
+- **marketing.md** — `~/your-project/.claude/rules/`
+- **database.md** — `~/your-other-project/.claude/rules/`
 
 ---
 

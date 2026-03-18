@@ -161,7 +161,7 @@ Then symlink only the global skills into ~/.claude/skills/:
 for skill in commit start handoff compact evolve; do
   ln -s ~/.claude/skill-library/$skill ~/.claude/skills/$skill
 done
-````
+```
 
 ### Install the claude-skills CLI:
 
@@ -218,3 +218,4 @@ Report what was created and any issues found.
 ```
 
 ```
+````

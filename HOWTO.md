@@ -179,6 +179,8 @@ Create `~/.claude/settings.json`:
 | `model`                      | `sonnet`      | Default model for the main session                                            |
 | `permissions.deny`           | glob patterns | Prevents Claude from reading secrets, env files, keys, and node_modules       |
 
+> **Warning — `skipDangerousModePermissionPrompt`**: The `config/settings.json` in this repo includes `"skipDangerousModePermissionPrompt": true`. This disables the permission prompt that Claude normally shows before taking potentially destructive actions. Only enable this if you have strong hook-based guardrails in place (e.g., `block-destructive.sh`, `guard-mcp-publish.sh`). If you are just getting started, omit this setting so Claude will always ask for confirmation.
+
 ---
 
 ## 4. Global Instructions (CLAUDE.md)
@@ -688,8 +690,6 @@ claude-skills add specflow research
 ### Skill Definition Format
 
 Each skill lives in `~/.claude/skill-library/<name>/SKILL.md`:
-
-### Skill Definition Format
 
 ```markdown
 ---
