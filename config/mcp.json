@@ -1,4 +1,5 @@
 {
+  "_NOTE": "Replace server entries below with your own MCP servers. The entries shown are examples only — do not commit tokens or credentials here. Use environment variables or a secrets manager instead.",
   "mcpServers": {
     "ai-assistant": {
       "command": "bash",

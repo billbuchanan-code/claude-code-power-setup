@@ -43,28 +43,54 @@
 
 ---
 
-## Skills (24)
+## Skills (28 custom + 15 gstack)
 
 ### SpecFlow Workflow (12)
 
 `/flow.init` `/flow.design` `/flow.analyze` `/flow.implement` `/flow.verify` `/flow.orchestrate` `/flow.memory` `/flow.merge` `/flow.review` `/flow.doctor` `/flow.roadmap` `/flow.taskstoissues`
 
-### Custom Skills (12)
+### Custom Skills (16)
 
-| Skill           | Model  | Purpose                                                                 |
-| --------------- | ------ | ----------------------------------------------------------------------- |
-| `/research`     | sonnet | Deep web + codebase research with synthesized report                    |
-| `/test-and-fix` | sonnet | Run tests, analyze failures, fix, re-run loop (5 iterations)            |
-| `/pr-review`    | sonnet | PR diff analysis with structured review feedback                        |
-| `/pdf-to-md`    | sonnet | Convert PDF to clean, AI-ready Markdown preserving filename             |
-| `/standup`      | haiku  | Daily standup from git activity and open PRs                            |
-| `/visualize`    | sonnet | Generate interactive HTML dashboards                                    |
-| `/multi-plan`   | sonnet | Parallel multi-agent feature planning (architecture + tests + security) |
-| `/evolve`       | haiku  | Analyze session patterns, recommend new skills/agents                   |
-| `/handoff`      | haiku  | Generate HANDOFF.md for session continuation                            |
-| `/compact`      | haiku  | Generate tailored /compact instructions preserving key context          |
-| `/exec-brief`   | sonnet | Transform raw data/analysis into 1-page C-suite executive summary       |
-| `/start`        | haiku  | Session startup health check — tools, MCP, keys, agents, checklist      |
+| Skill               | Model  | Purpose                                                                 |
+| ------------------- | ------ | ----------------------------------------------------------------------- |
+| `/research`         | sonnet | Deep web + codebase research with synthesized report                    |
+| `/test-and-fix`     | sonnet | Run tests, analyze failures, fix, re-run loop (5 iterations)            |
+| `/pr-review`        | sonnet | PR diff analysis with structured review feedback                        |
+| `/standup`          | haiku  | Daily standup from git activity and open PRs                            |
+| `/visualize`        | sonnet | Generate interactive HTML dashboards                                    |
+| `/multi-plan`       | sonnet | Parallel multi-agent feature planning (architecture + tests + security) |
+| `/evolve`           | haiku  | Analyze session patterns, recommend new skills/agents                   |
+| `/handoff`          | haiku  | Generate HANDOFF.md for session continuation                            |
+| `/compact`          | haiku  | Generate tailored /compact instructions preserving key context          |
+| `/exec-brief`       | sonnet | Transform raw data/analysis into 1-page C-suite executive summary       |
+| `/start`            | haiku  | Session startup health check — tools, MCP, keys, agents, checklist      |
+| `/roadmap-review`   | sonnet | Review and critique a project roadmap                                   |
+| `/voice-skill`      | sonnet | Draft communications in a custom persona voice (example — customize)    |
+| `/claude.sync.up`   | haiku  | Sync local dotfiles up to cloud storage                                 |
+| `/claude.sync.down` | haiku  | Sync dotfiles down from cloud storage                                   |
+| `/commit`           | haiku  | Staged commit with conventional message and PR push                     |
+
+### gstack Skills (15)
+
+Installed separately via `git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack`. Requires Bun v1.0+.
+
+| Skill                    | Purpose                                              |
+| ------------------------ | ---------------------------------------------------- |
+| `/plan-ceo-review`       | CEO-perspective review of a plan or proposal         |
+| `/plan-eng-review`       | Engineering-perspective plan review                  |
+| `/plan-design-review`    | Design-perspective plan review                       |
+| `/design-consultation`   | Design consultation and feedback                     |
+| `/review`                | General code/design review                           |
+| `/ship`                  | End-to-end shipping workflow                         |
+| `/browse`                | Browser automation — use instead of chrome MCP tools |
+| `/qa`                    | Full QA testing with real browser                    |
+| `/qa-only`               | QA testing without code changes                      |
+| `/qa-design-review`      | QA combined with visual design audit                 |
+| `/setup-browser-cookies` | Configure browser authentication for testing         |
+| `/retro`                 | Team retrospective facilitation                      |
+| `/document-release`      | Document a release with changelog and notes          |
+| `/debug`                 | Systematic debugging with browser and code tools     |
+| `/office-hours`          | Open-ended consultation and advice session           |
 
 ---
 
@@ -140,17 +166,20 @@
 | **Vercel**      | Dev            | `claude mcp add --scope project vercel ...`      |
 | **Warp Runner** | Dev            | `claude mcp add --scope project warp-runner ...` |
 
-Full add commands with credentials: see `~/.claude.json.backup-20260221-182630`
+Full add commands with credentials: see your own notes or secret manager.
 
-### Project: /Users/billbuchanan/claude
+> **Example — replace with your own**
+> The sections below show one user's MCP inventory as an example. Replace these with your actual project-level servers and cloud integrations.
+
+### Project-Level Example
 
 Sequential Thinking, Memory (knowledge graph), Playwright, Sentry
 
-### Cloud-Synced (need auth)
+### Cloud-Synced Examples (need auth)
 
 Figma, HubSpot, Cloudflare, Fireflies
 
-### Plugin Marketplace (not yet installed)
+### Plugin Marketplace (not yet installed — examples)
 
 Firebase, GitLab, Greptile, Laravel Boost, Linear, Serena, Stripe, Supabase
 
@@ -168,6 +197,8 @@ Firebase, GitLab, Greptile, Laravel Boost, Linear, Serena, Stripe, Supabase
 | `DISABLE_NON_ESSENTIAL_MODEL_CALLS`    | `1`      | Skip non-essential model calls  |
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | unset    | Enable Agent Teams              |
 | `CLAUDE_CODE_DISABLE_1M_CONTEXT`       | unset    | Disable 1M context for Opus 4.6 |
+
+> **Note**: The values shown above are examples from one configuration. Your actual values may differ from the defaults shown in `settings.json`. Set these in your shell profile or `settings.json` `env` block — values in `settings.json` take precedence over shell environment variables.
 
 ## CLI Tools
 

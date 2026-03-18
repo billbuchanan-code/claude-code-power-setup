@@ -1,6 +1,6 @@
 # The Ultimate Claude Code Power Setup
 
-A production-grade Claude Code configuration with 23 specialist agents, 27 custom skills, 12 safety hooks, and deep integrations across Google Workspace, Slack, Asana, browser automation, and more.
+A production-grade Claude Code configuration with 23 specialist agents, 28 custom skills, 11 safety hooks, and deep integrations across Google Workspace, Slack, Asana, browser automation, and more. Includes integration with [gstack](https://github.com/garrytan/gstack) — an open-source skill library by Garry Tan (YC CEO) that adds 15 more slash commands for browser QA, design audits, shipping workflows, and retrospectives.
 
 This guide documents a real-world setup built for a business executive who uses Claude Code as a daily operating system — not just a coding tool. It handles everything from strategic planning and marketing analytics to code reviews, security audits, and automated deployments.
 
@@ -11,8 +11,9 @@ This guide documents a real-world setup built for a business executive who uses 
 | Component             | Count      | Purpose                                                                                        |
 | --------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
 | **Specialist Agents** | 23         | Autonomous sub-agents for code review, security, strategy, data science, and more              |
-| **Custom Skills**     | 27         | Slash commands for workflows like `/commit`, `/research`, `/flow.design`                       |
-| **Safety Hooks**      | 12         | Pre/post tool hooks that block destructive commands, enforce read-only SQL, auto-format code   |
+| **Custom Skills**     | 28         | Slash commands for workflows like `/commit`, `/research`, `/flow.design`                       |
+| **gstack Skills**     | 15         | External skill library: browser QA, design audits, CEO/eng reviews, shipping, retrospectives   |
+| **Safety Hooks**      | 11         | Pre/post tool hooks that block destructive commands, enforce read-only SQL, auto-format code   |
 | **MCP Servers**       | 14+        | External integrations: Google Workspace, Slack, Airtable, browser automation, image generation |
 | **Behavioral Rules**  | 3 files    | Global coding standards, project-scoped rules for marketing and database work                  |
 | **Memory System**     | Persistent | Cross-session memory with structured types (user, feedback, project, reference)                |
@@ -31,8 +32,8 @@ This guide documents a real-world setup built for a business executive who uses 
   rules/
     coding.md            # Global coding conventions
   agents/                # 23 agent definition files (.md)
-  skills/                # 27 skill directories (each with SKILL.md)
-  hooks/                 # 12 shell scripts for safety and automation
+  skills/                # 28 skill directories (each with SKILL.md)
+  hooks/                 # 11 shell scripts for safety and automation
   agent-memory/          # Per-agent persistent memory
   projects/              # Per-project session memory (auto-managed)
 ```
@@ -47,6 +48,54 @@ This setup references two companion projects:
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | **SpecFlow**     | Agentic workflow system powering the 12 `flow.*` skills and 10 SpecFlow agents. Handles spec-driven design, implementation, review, and merge workflows.                                                 | [wiseyoda/specflow](https://github.com/wiseyoda/specflow) |
 | **AI Assistant** | Custom MCP server providing 100+ tools across email, calendar, contacts, drive, messaging, tasks, health, weather, and more. Powers the `ai-assistant` MCP integration referenced throughout this setup. | Private repo — contact for access                         |
+| **gstack**       | Open-source skill library providing browser QA, design audits, CEO/eng reviews, shipping workflows, and retrospectives. By Garry Tan.                                                                    | [garrytan/gstack](https://github.com/garrytan/gstack)     |
+
+---
+
+## gstack Integration
+
+[gstack](https://github.com/garrytan/gstack) is an open-source skill library by Garry Tan (YC CEO) that adds 15 slash-command skills to Claude Code. It complements the custom agents and SpecFlow skills in this setup — SpecFlow handles spec-driven development workflows, while gstack covers the outer loop: browser QA, design audits, CEO and engineering reviews, shipping, and retrospectives.
+
+### gstack Skills (15)
+
+| Skill                    | Purpose                                               |
+| ------------------------ | ----------------------------------------------------- |
+| `/plan-ceo-review`       | CEO-perspective review of a plan or proposal          |
+| `/plan-eng-review`       | Engineering-perspective plan review                   |
+| `/plan-design-review`    | Design-perspective plan review                        |
+| `/design-consultation`   | Design consultation and feedback                      |
+| `/review`                | General code/design review                            |
+| `/ship`                  | End-to-end shipping workflow                          |
+| `/browse`                | Browser automation (replaces direct chrome MCP calls) |
+| `/qa`                    | Full QA testing with real browser                     |
+| `/qa-only`               | QA testing without code changes                       |
+| `/qa-design-review`      | QA combined with visual design audit                  |
+| `/setup-browser-cookies` | Configure browser authentication for testing          |
+| `/retro`                 | Team retrospective facilitation                       |
+| `/document-release`      | Document a release with changelog and notes           |
+| `/debug`                 | Systematic debugging with browser and code tools      |
+| `/office-hours`          | Open-ended consultation and advice session            |
+
+### How Custom Skills and gstack Work Together
+
+| Layer           | Tool                           | When to Use                                            |
+| --------------- | ------------------------------ | ------------------------------------------------------ |
+| Spec-driven dev | SpecFlow (`/flow.*` skills)    | Design → implement → review → merge workflows          |
+| Browser QA      | gstack `/qa`, `/qa-only`       | Real-browser testing after implementation              |
+| Design audit    | gstack `/qa-design-review`     | Visual QA combined with design feedback                |
+| Shipping        | gstack `/ship`                 | End-to-end deployment and release workflow             |
+| Plan reviews    | gstack `/plan-ceo-review` etc. | Strategic and technical review before committing       |
+| Web browsing    | gstack `/browse`               | All web browsing — never use chrome MCP tools directly |
+
+### Installation
+
+```bash
+# Install gstack (browser QA, design review, shipping workflows)
+git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+cd ~/.claude/skills/gstack && ./setup
+```
+
+**Prerequisites for gstack**: Claude Code, Git, and Bun v1.0+. Install Bun with `curl -fsSL https://bun.sh/install | bash`.
 
 ---
 
@@ -83,7 +132,7 @@ claude-code-power-setup/
     agents.md                  # Agent roster and routing rules
     settings.json              # Core settings (model, hooks, permissions)
     mcp.json                   # MCP server definitions
-  agents/                      # 23 agent definition files
+  agents/                      # 23 agent definition files (.md)
     agent-manager.md
     code-reviewer.md
     cost-cleric.md
@@ -98,7 +147,7 @@ claude-code-power-setup/
     strategic-thinker.md
     test-builder.md
     ux-designer.md
-  skills/                      # 27 skill definitions
+  skills/                      # 28 skill definitions
     commit/SKILL.md
     start/skill.md
     handoff/SKILL.md
@@ -111,12 +160,12 @@ claude-code-power-setup/
     pr-review/SKILL.md
     standup/SKILL.md
     evolve/SKILL.md
-    bill-voice-skill/SKILL.md
+    voice-skill/SKILL.md
     claude.sync.up/SKILL.md
     claude.sync.down/SKILL.md
     roadmap-review/SKILL.md
     flow.*/SKILL.md            # 12 SpecFlow workflow skills
-  hooks/                       # 12 safety and automation scripts
+  hooks/                       # 11 safety and automation scripts
     block-destructive.sh
     validate-readonly-query.sh
     guard-mcp-publish.sh
@@ -139,11 +188,12 @@ claude-code-power-setup/
 
 Skills are organized into three tiers:
 
-| Tier                                 | Skills                                                                                                                            | Behavior                          |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| **Global** (always on)               | `commit`, `start`, `handoff`, `compact`, `evolve`                                                                                 | Available in every project        |
-| **Bundles** (opt-in as a group)      | `specflow` (12 flow.\* skills), `sync` (sync.up + sync.down)                                                                      | Add to a project with one command |
-| **Selectable** (opt-in individually) | `research`, `test-and-fix`, `multi-plan`, `visualize`, `exec-brief`, `pr-review`, `standup`, `roadmap-review`, `bill-voice-skill` | Pick per project                  |
+| Tier                                 | Skills                                                                                                                                                                                                                            | Behavior                             |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **Global** (always on)               | `commit`, `start`, `handoff`, `compact`, `evolve`                                                                                                                                                                                 | Available in every project           |
+| **Bundles** (opt-in as a group)      | `specflow` (12 flow.\* skills), `sync` (sync.up + sync.down)                                                                                                                                                                      | Add to a project with one command    |
+| **Selectable** (opt-in individually) | `research`, `test-and-fix`, `multi-plan`, `visualize`, `exec-brief`, `pr-review`, `standup`, `roadmap-review`, `voice-skill`                                                                                                      | Pick per project                     |
+| **gstack** (external)                | `plan-ceo-review`, `plan-eng-review`, `plan-design-review`, `design-consultation`, `review`, `ship`, `browse`, `qa`, `qa-only`, `qa-design-review`, `setup-browser-cookies`, `retro`, `document-release`, `debug`, `office-hours` | Installed separately via gstack repo |
 
 All skills live in `~/.claude/skill-library/`. Projects opt in via symlinks using the `claude-skills` CLI:
 
@@ -165,6 +215,8 @@ claude-skills available                # Show full library
 ## Installation
 
 To install everything at once, copy the files into your `~/.claude/` directory:
+
+> **Security note**: Never commit tokens, API keys, or credentials inside `mcp.json`. Use environment variables or a secrets manager (e.g. Doppler) and reference them from the config.
 
 ```bash
 # Clone the repo
@@ -195,7 +247,7 @@ done
 mkdir -p ~/.claude/scripts
 cp scripts/claude-skills ~/.claude/scripts/claude-skills
 chmod +x ~/.claude/scripts/claude-skills
-echo 'export PATH="$HOME/.claude/scripts:$PATH"' >> ~/.zshrc
+echo 'export PATH="$HOME/.claude/scripts:$PATH"' >> ~/.zshrc  # or ~/.bashrc for bash users
 
 # Make hooks executable
 chmod +x ~/.claude/hooks/*.sh
@@ -205,3 +257,19 @@ mkdir -p ~/.claude/{agent-memory,projects}
 ```
 
 Then customize `~/.claude/CLAUDE.md` for your role and preferences.
+
+### Install gstack (optional but recommended)
+
+gstack requires Bun v1.0+. If you don't have it:
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+Then install gstack:
+
+```bash
+# Install gstack (browser QA, design review, shipping workflows)
+git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+cd ~/.claude/skills/gstack && ./setup
+```

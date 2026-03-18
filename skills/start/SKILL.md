@@ -72,6 +72,14 @@ Also check for project-level MCP config:
 cat .claude/mcp.json 2>/dev/null || cat .mcp.json 2>/dev/null || echo "No project-level MCP config"
 ```
 
+---
+
+## Optional: AI Assistant Infrastructure
+
+> Steps 3b and 3c are specific to a custom AI Assistant MCP server that uses Doppler for secrets management. If you are not using this infrastructure, skip to Step 4.
+
+---
+
 ### Step 3b: AI Assistant Secrets Check
 
 Verify Doppler is available and check which secrets are configured:
@@ -223,12 +231,11 @@ Only `coding.md` is expected here. Confirm it is present.
 
 **Project-scoped rules** (in each project's `.claude/rules/` directory):
 
-- `marketing.md` — expected in `~/claude/product-development/.claude/rules/`
-- `database.md` — expected in `~/claude/ai-assistant/.claude/rules/`
+- Any project-scoped rule files (e.g., `marketing.md`, `database.md`) — expected in each project's `.claude/rules/` directory
 
 ```bash
-ls ~/claude/product-development/.claude/rules/marketing.md 2>/dev/null && echo "marketing.md: present" || echo "marketing.md: MISSING"
-ls ~/claude/ai-assistant/.claude/rules/database.md 2>/dev/null && echo "database.md: present" || echo "database.md: MISSING"
+# Check for your own project-scoped rule files here. Example:
+# ls ~/your-project/.claude/rules/marketing.md 2>/dev/null && echo "present" || echo "MISSING"
 ```
 
 Do NOT flag project-scoped rules as missing from the global rules directory — they belong in their projects.
@@ -393,7 +400,7 @@ Every issue found MUST be reported in the "Issues Found" section with three part
 | Hook script not executable                                      | MEDIUM   | Run `chmod +x ~/.claude/hooks/<script-name>` for each non-executable script.                                                                                                                                                                                                                                                        |
 | Missing agent memory directories (expected 12)                  | LOW      | Run `mkdir -p ~/.claude/agent-memory/<agent-name>` for each missing agent. Expected: code-reviewer, cost-cleric, data-scientist, database-reviewer, debugger, deploy-engineer, documenter, media-planner, security-auditor, strategic-thinker, test-builder, ux-designer.                                                           |
 | Missing global rule (coding.md)                                 | MEDIUM   | Check `~/.claude/rules/` for coding.md. Restore from backup or re-create.                                                                                                                                                                                                                                                           |
-| Missing project-scoped rule file                                | LOW      | Check the project's `.claude/rules/` dir. marketing.md → `~/claude/product-development/.claude/rules/`, database.md → `~/claude/ai-assistant/.claude/rules/`.                                                                                                                                                                       |
+| Missing project-scoped rule file                                | LOW      | Check the project's `.claude/rules/` directory. Restore the missing rule file from your own backup or recreate it.                                                                                                                                                                                                                  |
 | GitHub CLI not authenticated                                    | HIGH     | Run `gh auth login` and follow the prompts. Choose SSH protocol.                                                                                                                                                                                                                                                                    |
 | GitHub CLI not installed                                        | HIGH     | Run `brew install gh` (macOS) or see https://cli.github.com/                                                                                                                                                                                                                                                                        |
 | Node.js not found                                               | HIGH     | Install via `nvm install --lts` or `brew install node`                                                                                                                                                                                                                                                                              |
