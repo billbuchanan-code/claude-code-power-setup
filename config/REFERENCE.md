@@ -43,7 +43,7 @@
 
 ---
 
-## Skills (28)
+## Skills (28 custom + 15 gstack)
 
 ### SpecFlow Workflow (12)
 
@@ -69,6 +69,28 @@
 | `/claude.sync.up`   | haiku  | Sync local dotfiles up to cloud storage                                 |
 | `/claude.sync.down` | haiku  | Sync dotfiles down from cloud storage                                   |
 | `/commit`           | haiku  | Staged commit with conventional message and PR push                     |
+
+### gstack Skills (15)
+
+Installed separately via `git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack`. Requires Bun v1.0+.
+
+| Skill                    | Purpose                                              |
+| ------------------------ | ---------------------------------------------------- |
+| `/plan-ceo-review`       | CEO-perspective review of a plan or proposal         |
+| `/plan-eng-review`       | Engineering-perspective plan review                  |
+| `/plan-design-review`    | Design-perspective plan review                       |
+| `/design-consultation`   | Design consultation and feedback                     |
+| `/review`                | General code/design review                           |
+| `/ship`                  | End-to-end shipping workflow                         |
+| `/browse`                | Browser automation — use instead of chrome MCP tools |
+| `/qa`                    | Full QA testing with real browser                    |
+| `/qa-only`               | QA testing without code changes                      |
+| `/qa-design-review`      | QA combined with visual design audit                 |
+| `/setup-browser-cookies` | Configure browser authentication for testing         |
+| `/retro`                 | Team retrospective facilitation                      |
+| `/document-release`      | Document a release with changelog and notes          |
+| `/debug`                 | Systematic debugging with browser and code tools     |
+| `/office-hours`          | Open-ended consultation and advice session           |
 
 ---
 

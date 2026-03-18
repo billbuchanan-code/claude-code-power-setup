@@ -76,3 +76,11 @@ Name sessions as `[project]-[date]-[2-word-topic]`. Use in HANDOFF.md filenames.
 - `/evolve` periodically to discover patterns worth automating
 - Max 3-4 agents active simultaneously
 - **Writer/Reviewer pattern**: For features >100 lines, use two sessions — Session A implements, Session B reviews with fresh context (no implementation bias)
+
+---
+
+## gstack
+
+Use the `/browse` skill from gstack for all web browsing — never use `mcp__claude-in-chrome__*` tools directly.
+
+Available skills: `/plan-ceo-review`, `/plan-eng-review`, `/plan-design-review`, `/design-consultation`, `/review`, `/ship`, `/browse`, `/qa`, `/qa-only`, `/qa-design-review`, `/setup-browser-cookies`, `/retro`, `/document-release`, `/debug`, `/office-hours`

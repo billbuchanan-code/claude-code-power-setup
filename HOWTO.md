@@ -13,6 +13,7 @@ This guide walks through every component of the configuration. Copy what you nee
 5. [Safety Hooks](#5-safety-hooks)
 6. [Specialist Agents](#6-specialist-agents)
 7. [Custom Skills](#7-custom-skills)
+   - [7.5 gstack: Browser QA and Shipping Skills](#75-gstack-browser-qa-and-shipping-skills)
 8. [MCP Server Integrations](#8-mcp-server-integrations)
 9. [Behavioral Rules](#9-behavioral-rules)
 10. [Memory System](#10-memory-system)
@@ -28,6 +29,7 @@ This guide walks through every component of the configuration. Copy what you nee
 - **jq** installed (`brew install jq` on macOS) — required by hook scripts
 - A Claude API key or Claude Max subscription
 - Optional: **Doppler** for secrets management, **Prettier/Black/gofmt** for auto-formatting
+- Optional: **Bun v1.0+** (`curl -fsSL https://bun.sh/install | bash`) — required for gstack skills
 
 ---
 
@@ -804,6 +806,53 @@ model: haiku
 - Never force push unless explicitly asked
 - If no changes, say so and stop
 ```
+
+---
+
+## 7.5 gstack: Browser QA and Shipping Skills
+
+[gstack](https://github.com/garrytan/gstack) is an open-source skill library by Garry Tan (YC CEO) with 23.6k stars. It provides 15 slash-command skills that extend Claude Code with real browser QA testing, visual design audits, CEO/engineering plan reviews, shipping workflows, and retrospectives.
+
+### What gstack Provides
+
+- **Real browser QA** — `/qa` and `/qa-only` run actual browser tests against your running app
+- **Design audits** — `/qa-design-review` combines functional QA with visual design feedback
+- **Plan reviews** — `/plan-ceo-review`, `/plan-eng-review`, `/plan-design-review` give multi-lens feedback on proposals
+- **Shipping** — `/ship` handles the end-to-end release workflow
+- **Browsing** — `/browse` wraps chrome browser tools so you never call `mcp__claude-in-chrome__*` directly
+- **Retrospectives** — `/retro` facilitates structured team retrospectives
+
+### How gstack Complements Custom Skills
+
+The custom skills and SpecFlow in this setup handle spec-driven development: planning, implementation, review, and merge. gstack handles the outer loop — QA, shipping, and stakeholder reviews — that happens before and after code lands.
+
+| Phase         | Use This                     |
+| ------------- | ---------------------------- |
+| Design specs  | `/flow.design` (SpecFlow)    |
+| Implement     | `/flow.implement` (SpecFlow) |
+| Code review   | `/flow.review` (SpecFlow)    |
+| QA testing    | `/qa` (gstack)               |
+| Ship          | `/ship` (gstack)             |
+| Retrospective | `/retro` (gstack)            |
+
+### Installation
+
+gstack requires Bun v1.0+:
+
+```bash
+# Install Bun if needed
+curl -fsSL https://bun.sh/install | bash
+
+# Install gstack
+git clone https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+cd ~/.claude/skills/gstack && ./setup
+```
+
+### Key Rule: Use `/browse` for All Web Browsing
+
+Never call `mcp__claude-in-chrome__*` or `mcp__chrome-browser__*` tools directly. Always use `/browse` from gstack instead — it wraps the browser tools with proper error handling and session management.
+
+For full documentation on all 15 skills, see the [gstack repo](https://github.com/garrytan/gstack).
 
 ---
 
